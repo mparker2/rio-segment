@@ -1,7 +1,7 @@
 # Rasterio Segmentation plugin
 
-`rasterio` plugin using `scikit-image` to segment a raster or set of rasters.
-Also allows segmentation to be informed by existing shapefiles (e.g. ordnance survey data).
+`rasterio` plugin using `scikit-image` to segment a raster or set of **overlapping** rasters.
+Also allows segmentation to be informed by existing shapefiles (e.g.  ordnance survey data).
 
 ## Dependencies:
 
