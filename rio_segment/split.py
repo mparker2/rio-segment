@@ -15,7 +15,7 @@ import click
 
 
 def edges_from_raster_and_shp(raster_list, shp_list,
-                              shp_weight, perc, no_data):
+                              shp_weight, fill_holes, perc, no_data):
     '''
     Read a list of gtiff files, find edges in each band, and overlay to give
     single channel image of edges.
@@ -67,6 +67,11 @@ def edges_from_raster_and_shp(raster_list, shp_list,
                     exposure.rescale_intensity(edges, out_range=(0, 255))
                     all_edges = np.maximum(all_edges, edges)
                     mask = np.logical_or(mask, band != nd)
+
+    # if we are going to fill holes in rasters with shapefile info, we just
+    # need to fill in any gaps in the mask
+    if fill_holes:
+        mask = ndi.binary_fill_holes(mask)
 
     for fn in shp_list:
         click.echo('reading shapes from {}'.format(fn))

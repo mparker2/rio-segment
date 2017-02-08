@@ -25,6 +25,12 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help', '--usage'])
 @click.option('--shapefile-weight', required=False, default=100,
               help=('Weighting to give edges from shapefile compared to edges'
                     'detected from rasters. A value between 0 and 255'))
+@click.option('--fill-holes/--no-fill-holes', required=False, default=False,
+              help=('Try to fill holes in raster layers using info from '
+                    'shapefiles. If there is no shapefile input this will '
+                    'raise an error. Will not be successful unless there '
+                    'are polygons overlapping with the masked region of'
+                    'the raster. Default: False'))
 @click.option('--size-pen', required=False, default=10,
               help=('Factor to penalise segments by size on merging. Set to '
                     'ero to turn off this behaviour. Default: 10'))
@@ -36,7 +42,8 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help', '--usage'])
 @click.option('--threshold', default=50, required=False,
               help='Percentile threshold to merge segments at. Default: 50')
 def segment(input_files, output_shapefile,
-            no_data, shapefile_weight, size_pen, rescale_perc,
+            no_data, shapefile_weight, fill_holes,
+            size_pen, rescale_perc,
             footprint, threshold):
     '''
     Segment an raster or set of rasters using watershed and RAG boundary
@@ -45,6 +52,9 @@ def segment(input_files, output_shapefile,
     in the form of a single shapefile of segments.
     '''
     input_raster, input_shapefile = sort_filetype(input_files)
+
+    if fill_holes and not input_shapefile:
+        raise ValueError('cannot fill raster holes without some shapes')
 
     edges, mask, t, c = edges_from_raster_and_shp(input_raster,
                                                   input_shapefile,
