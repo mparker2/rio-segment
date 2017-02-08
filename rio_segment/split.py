@@ -58,13 +58,15 @@ def edges_from_raster_and_shp(raster_list, shp_list,
 
                     # rescale band
                     p_low, p_high = np.percentile(band, perc)
-                    band = exposure.rescale_intensity(band,
-                                                      in_range=(p_low, p_high),
-                                                      out_range=(0, 255))
+                    band = exposure.rescale_intensity(
+                            band,
+                            in_range=(p_low, p_high),
+                            out_range=(0, 255))
 
                     # convert straight to edges to save memory
                     edges = filters.sobel(band, mask=band != nd)
-                    exposure.rescale_intensity(edges, out_range=(0, 255))
+                    edges = exposure.rescale_intensity(edges,
+                                                       out_range=(0, 255))
                     all_edges = np.maximum(all_edges, edges)
                     mask = np.logical_or(mask, band != nd)
 
