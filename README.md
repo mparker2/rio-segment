@@ -17,7 +17,10 @@ Get miniconda for windows [here](https://repo.continuum.io/miniconda/Miniconda3-
 # get development scikit-image binaries (built from github master branch on 07-02-2017) 
 conda create -n living_maps --channel mparker2 --channel conda-forge scikit-image=pre0.13 rasterio fiona
 
-git clone https://github.com/mparker2/rio-segment.git
+# activate the conda environment - nb activate script does not work in powershell for some reason?!
+activate living_maps
+
+git clone https://github.com/mparker2/rio-segment.git # in git-shell, or download zip
 cd rio-segment
 python setup.py install
 ```
