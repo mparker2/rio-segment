@@ -35,6 +35,7 @@ def merge_nodes(graph, src, dst):
     '''
     merge two nodes of the RAG
     '''
+    # merge the pixel counts of the nodes
     graph.node[dst]['pixels'] += graph.node[src]['pixels']
 
 
