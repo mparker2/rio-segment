@@ -30,7 +30,7 @@ def edges_from_raster_and_shp(raster_list, shp_list,
         bounds = template_gtiff.bounds
         shape = template_gtiff.shape
         crs = template_gtiff.crs
-        geo_transform = template_gtiff.transform
+        raster_meta = template_gtiff.meta.copy()
 
     mask = np.zeros(shape, dtype=bool)
     all_edges = np.zeros(shape, dtype=np.float)
@@ -80,12 +80,14 @@ def edges_from_raster_and_shp(raster_list, shp_list,
         with fiona.open(fn) as shp:
             records = zip((g['geometry'] for g in shp.filter(bbox=bounds)),
                           it.count(1))
-            ras = rasterize(records, out_shape=shape, transform=geo_transform)
+            ras = rasterize(records,
+                            out_shape=shape,
+                            transform=raster_meta['transform'])
             edges = segmentation.find_boundaries(ras) * shp_weight
             all_edges = np.maximum(all_edges, edges)
 
     all_edges = filters.gaussian(all_edges, 1)
-    return all_edges, mask, geo_transform, crs
+    return all_edges, mask, crs, raster_meta
 
 
 def watershed_segment(edges, footprint_size):

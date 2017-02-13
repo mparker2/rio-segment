@@ -9,8 +9,7 @@ Watershed segmentation and graph based merging.
 import click
 from rio_segment import (
        sort_filetype,  edges_from_raster_and_shp,
-       watershed_segment, rag_merge_threshold,
-       write_segments_as_shapefile
+       watershed_segment, rag_merge_threshold, write_segments
        )
 
 
@@ -41,10 +40,13 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help', '--usage'])
                     'for watershed segmentation. Default: 2'))
 @click.option('--threshold', default=40, required=False,
               help='Percentile threshold to merge segments at. Default: 40')
+@click.option('--output-raster/--no-output-raster',
+              default=True, required=False,
+              help='Output a raster of segments as well as a shapefile')
 def segment(input_files, output_shapefile,
             no_data, shapefile_weight, fill_holes,
             size_pen, rescale_perc,
-            footprint, threshold):
+            footprint, threshold, output_raster):
     '''
     Segment an raster or set of rasters using watershed and RAG boundary
     merging. Input is a set of one or more rasters. Shapefiles can also be
@@ -56,15 +58,16 @@ def segment(input_files, output_shapefile,
     if fill_holes and not input_shapefile:
         raise ValueError('cannot fill raster holes without some shapes')
 
-    edges, mask, t, c = edges_from_raster_and_shp(input_raster,
-                                                  input_shapefile,
-                                                  shapefile_weight,
-                                                  fill_holes,
-                                                  rescale_perc,
-                                                  no_data)
+    edges, mask, crs, meta = edges_from_raster_and_shp(input_raster,
+                                                       input_shapefile,
+                                                       shapefile_weight,
+                                                       fill_holes,
+                                                       rescale_perc,
+                                                       no_data)
     labels = watershed_segment(edges, footprint)
     refined_labels = rag_merge_threshold(edges, labels, threshold, size_pen)
-    write_segments_as_shapefile(output_shapefile, refined_labels, mask, t, c)
+    write_segments(output_shapefile, refined_labels,
+                   mask, crs, meta, output_raster)
     click.echo('complete')
 
 if __name__ == '__main__':

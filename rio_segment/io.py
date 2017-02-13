@@ -3,6 +3,7 @@ io functions for rio-segment
 '''
 
 import os
+import rasterio
 from rasterio.features import shapes as polygonize
 import fiona
 
@@ -21,18 +22,29 @@ def sort_filetype(input_files):
     return input_raster, input_shapefile
 
 
-def write_segments_as_shapefile(fn, segments, mask, geo_transform, source_crs):
+def write_segments(fn, segments, mask, source_crs,
+                   raster_meta, write_raster=False):
     '''
     Convert a numpy array of segments to polygons using
     rasterio.features.shapes and write the resultant records
     to a Shapefile.
     '''
-    schema = {'geometry': 'Polygon', 'properties': {}}
+    if write_raster:
+        raster_meta.update(dtype=rasterio.int16,
+                           count=1,
+                           compress='lzw',
+                           no_data=0)
+        raster_fn = os.path.join(os.path.splitext(fn)[0], '.tif')
+        with rasterio.open(raster_fn, 'w', **raster_meta) as gtiff:
+            gtiff.write(segments, 1)
+            gtiff.write_mask(mask)
+
+    shp_schema = {'geometry': 'Polygon', 'properties': {}}
     with fiona.open(fn, 'w', driver='ESRI Shapefile',
-                    crs=source_crs, schema=schema) as shpfile:
+                    crs=source_crs, schema=shp_schema) as shpfile:
         segments = segments.astype('int32')
         for shape, val, in polygonize(segments,
-                                      transform=geo_transform,
+                                      transform=raster_meta['transform'],
                                       mask=mask):
             record = dict(geometry=shape, id=val, properties={})
             shpfile.write(record)
