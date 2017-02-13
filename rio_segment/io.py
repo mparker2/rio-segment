@@ -39,12 +39,12 @@ def write_segments(fn, segments, mask, source_crs,
             gtiff.write(segments, 1)
             gtiff.write_mask(mask)
 
-    shp_schema = {'geometry': 'Polygon', 'properties': {}}
+    shp_schema = {'geometry': 'Polygon', 'properties': {'id': 'int'}}
     with fiona.open(fn, 'w', driver='ESRI Shapefile',
                     crs=source_crs, schema=shp_schema) as shpfile:
         segments = segments.astype('int32')
         for shape, val, in polygonize(segments,
                                       transform=raster_meta['transform'],
                                       mask=mask):
-            record = dict(geometry=shape, id=val, properties={})
+            record = dict(geometry=shape, id=val, properties={'id': val})
             shpfile.write(record)
