@@ -74,6 +74,7 @@ def rag_merge_threshold(edges, labels, threshold, size_pen):
     refined_labels = graph.merge_hierarchical(
             labels, rag, t, rag_copy=True, in_place_merge=True,
             merge_func=merge_nodes, weight_func=update_edge_weights)
-    refined_labels, *_ = segmentation.relabel_sequential(refined_labels)
+    refined_labels, *_ = segmentation.relabel_sequential(refined_labels + 1,
+                                                         offset=1)
     click.echo('merged into {} segments'.format(refined_labels.max()))
     return refined_labels

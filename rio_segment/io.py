@@ -29,11 +29,12 @@ def write_segments(fn, segments, mask, source_crs,
     rasterio.features.shapes and write the resultant records
     to a Shapefile.
     '''
+    segments = segments.astype('int32')
     if write_raster:
-        raster_meta.update(dtype=rasterio.int16,
+        raster_meta.update(dtype=rasterio.int32,
                            count=1,
                            compress='lzw',
-                           no_data=0)
+                           nodata=0)
         raster_fn = os.path.splitext(fn)[0] + '.tif'
         with rasterio.open(raster_fn, 'w', **raster_meta) as gtiff:
             gtiff.write(segments, 1)
@@ -42,7 +43,6 @@ def write_segments(fn, segments, mask, source_crs,
     shp_schema = {'geometry': 'Polygon', 'properties': {'id': 'int'}}
     with fiona.open(fn, 'w', driver='ESRI Shapefile',
                     crs=source_crs, schema=shp_schema) as shpfile:
-        segments = segments.astype('int32')
         for shape, val, in polygonize(segments,
                                       transform=raster_meta['transform'],
                                       mask=mask):
