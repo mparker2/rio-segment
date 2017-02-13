@@ -3,6 +3,12 @@
 `rasterio` plugin using `scikit-image` to segment a raster or set of **overlapping** rasters.
 Also allows segmentation to be informed by existing shapefiles (e.g.  ordnance survey data).
 
+### Pre-segmentation
+![Devon](../imgs/devon.png)
+
+### Segmented:
+![Devon segments](../imgs/devon_segs.png)
+
 ## Dependencies:
 
 * rasterio
