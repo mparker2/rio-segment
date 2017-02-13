@@ -4,10 +4,10 @@
 Also allows segmentation to be informed by existing shapefiles (e.g.  ordnance survey data).
 
 ### Pre-segmentation
-![Devon](../imgs/devon.png)
+![Devon](imgs/devon.png)
 
 ### Segmented:
-![Devon segments](../imgs/devon_segs.png)
+![Devon segments](imgs/devon_segs.png)
 
 ## Dependencies:
 
