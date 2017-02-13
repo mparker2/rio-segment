@@ -1,7 +1,7 @@
 """segment: watershed segmentation of rasters"""
 
 import logging
-from .io import sort_filetype, write_segments_as_shapefile
+from .io import sort_filetype, write_segments
 from .split import edges_from_raster_and_shp, watershed_segment
 from .merge import rag_merge_threshold 
 from .cli import segment

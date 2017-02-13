@@ -23,7 +23,7 @@ def sort_filetype(input_files):
 
 
 def write_segments(fn, segments, mask, source_crs,
-                   raster_meta, write_raster=False):
+                   raster_meta, write_raster=True):
     '''
     Convert a numpy array of segments to polygons using
     rasterio.features.shapes and write the resultant records
