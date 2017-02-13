@@ -38,9 +38,9 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help', '--usage'])
               help='Percentiles to rescale each gtiff band to. default: 0 98')
 @click.option('--footprint', default=2, required=False,
               help=('Size of footprint for determining seeds '
-                    'for watershed segmentation. Default: 3'))
+                    'for watershed segmentation. Default: 2'))
 @click.option('--threshold', default=40, required=False,
-              help='Percentile threshold to merge segments at. Default: 50')
+              help='Percentile threshold to merge segments at. Default: 40')
 def segment(input_files, output_shapefile,
             no_data, shapefile_weight, fill_holes,
             size_pen, rescale_perc,
@@ -59,6 +59,7 @@ def segment(input_files, output_shapefile,
     edges, mask, t, c = edges_from_raster_and_shp(input_raster,
                                                   input_shapefile,
                                                   shapefile_weight,
+                                                  fill_holes,
                                                   rescale_perc,
                                                   no_data)
     labels = watershed_segment(edges, footprint)
