@@ -22,7 +22,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help', '--usage'])
 @click.argument('output-shapefile', nargs=1, required=True, metavar='OUTPUT')
 @click.option('--no-data', default=None, required=False, type=int,
               help='Overrides nodata value for raster files')
-@click.option('--shapefile-weight', required=False, default=100,
+@click.option('--shapefile-weight', required=False, default=150,
               help=('Weighting to give edges from shapefile compared to edges'
                     'detected from rasters. A value between 0 and 255'))
 @click.option('--fill-holes/--no-fill-holes', required=False, default=False,
@@ -36,10 +36,10 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help', '--usage'])
                     'ero to turn off this behaviour. Default: 10'))
 @click.option('--rescale-perc', default=(0, 98), nargs=2, required=False,
               help='Percentiles to rescale each gtiff band to. default: 0 98')
-@click.option('--footprint', default=3, required=False,
+@click.option('--footprint', default=2, required=False,
               help=('Size of footprint for determining seeds '
                     'for watershed segmentation. Default: 3'))
-@click.option('--threshold', default=50, required=False,
+@click.option('--threshold', default=40, required=False,
               help='Percentile threshold to merge segments at. Default: 50')
 def segment(input_files, output_shapefile,
             no_data, shapefile_weight, fill_holes,
