@@ -34,7 +34,7 @@ def write_segments(fn, segments, mask, source_crs,
                            count=1,
                            compress='lzw',
                            no_data=0)
-        raster_fn = os.path.join(os.path.splitext(fn)[0], '.tif')
+        raster_fn = os.path.splitext(fn)[0] + '.tif'
         with rasterio.open(raster_fn, 'w', **raster_meta) as gtiff:
             gtiff.write(segments, 1)
             gtiff.write_mask(mask)
